@@ -5,7 +5,7 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Harish Pant",
+      "name": "Harryes",
       "email": "pantharish120@gmail.com"
     }
   ],
@@ -14,7 +14,8 @@
     "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
     "illuminate/auth": "^8.0|^9.0|^10.0|^11.0|^12.0",
     "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0",
-    "illuminate/notifications": "^8.0|^9.0|^10.0|^11.0|^12.0"
+    "illuminate/notifications": "^8.0|^9.0|^10.0|^11.0|^12.0",
+    "guzzlehttp/guzzle": "^7.0"
   },
   "autoload": {
     "psr-4": {
