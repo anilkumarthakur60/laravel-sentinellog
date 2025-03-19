@@ -6,6 +6,7 @@ namespace Harryes\SentinelLog\Listeners;
 
 use Harryes\SentinelLog\Models\AuthenticationLog;
 use Harryes\SentinelLog\Notifications\SessionHijackingDetected;
+use Harryes\SentinelLog\Services\BruteForceProtectionService;
 use Harryes\SentinelLog\Services\DeviceFingerprintService;
 use Harryes\SentinelLog\Services\GeolocationService;
 use Harryes\SentinelLog\Services\SessionTrackingService;
@@ -19,17 +20,20 @@ class LogSuccessfulLogin
     protected GeolocationService $geoService;
     protected TwoFactorAuthenticationService $twoFactorService;
     protected SessionTrackingService $sessionService;
+    protected BruteForceProtectionService $bruteForceService;
 
     public function __construct(
         DeviceFingerprintService $fingerprintService,
         GeolocationService $geoService,
         TwoFactorAuthenticationService $twoFactorService,
-        SessionTrackingService $sessionService
+        SessionTrackingService $sessionService,
+        BruteForceProtectionService $bruteForceService
     ) {
         $this->fingerprintService = $fingerprintService;
         $this->geoService = $geoService;
         $this->twoFactorService = $twoFactorService;
         $this->sessionService = $sessionService;
+        $this->bruteForceService = $bruteForceService;
     }
 
     public function handle(Login $event): void
@@ -38,6 +42,7 @@ class LogSuccessfulLogin
             return;
         }
 
+        $this->bruteForceService->checkGeoFence(); // Check geo-fencing first
         $session = $this->sessionService->track($event->user);
         $log = AuthenticationLog::create([
             'authenticatable_id' => $event->user->getKey(),
@@ -50,6 +55,8 @@ class LogSuccessfulLogin
             'location' => $this->geoService->getLocation(request()->ip()),
             'is_successful' => true,
         ]);
+
+        $this->bruteForceService->clearAttempts(request()->ip()); // Clear attempts on success
 
         if ($event->user->two_factor_secret && !$event->user->session()->has('2fa_verified')) {
             AuthenticationLog::create([
