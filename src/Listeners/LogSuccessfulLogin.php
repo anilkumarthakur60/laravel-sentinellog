@@ -26,7 +26,7 @@ class LogSuccessfulLogin
             return;
         }
 
-        AuthenticationLog::create([
+        $log = AuthenticationLog::create([
             'authenticatable_id' => $event->user->getKey(),
             'authenticatable_type' => get_class($event->user),
             'event_name' => 'login',
@@ -36,5 +36,9 @@ class LogSuccessfulLogin
             'location' => $this->geoService->getLocation(request()->ip()),
             'is_successful' => true,
         ]);
+
+        if ($event->user->isNewDevice($log->device_info['hash'] ?? '')) {
+            $event->user->notifyNewDevice($log);
+        }
     }
 }

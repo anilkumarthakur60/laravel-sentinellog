@@ -26,7 +26,7 @@ class LogFailedLogin
             return;
         }
 
-        AuthenticationLog::create([
+        $log = AuthenticationLog::create([
             'authenticatable_id' => $event->user ? $event->user->getKey() : null,
             'authenticatable_type' => $event->user ? get_class($event->user) : null,
             'event_name' => 'failed',
@@ -36,5 +36,9 @@ class LogFailedLogin
             'location' => $this->geoService->getLocation(request()->ip()),
             'is_successful' => false,
         ]);
+
+        if ($event->user) {
+            $event->user->notifyFailedAttempt($log);
+        }
     }
 }
