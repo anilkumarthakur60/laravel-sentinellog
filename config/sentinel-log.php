@@ -37,6 +37,16 @@ return [
     ],
     'sessions' => [
         'enabled' => env('SENTINEL_LOG_SESSIONS_ENABLED', true),
-        'max_active' => 5, // Max concurrent sessions
+        'max_active' => 5,
+    ],
+    'brute_force' => [
+        'enabled' => env('SENTINEL_LOG_BRUTE_FORCE_ENABLED', true),
+        'threshold' => 5, // Max failed attempts
+        'window' => 15, // Minutes
+        'block_duration' => 24, // Hours
+    ],
+    'geo_fencing' => [
+        'enabled' => env('SENTINEL_LOG_GEO_FENCING_ENABLED', false),
+        'allowed_countries' => ['United States', 'Canada'], // Example
     ],
 ];
