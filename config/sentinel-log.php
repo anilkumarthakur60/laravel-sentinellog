@@ -26,9 +26,17 @@ return [
             'threshold' => 3,
             'window' => 60,
         ],
+        'session_hijacking' => [
+            'enabled' => env('SENTINEL_LOG_NOTIFY_HIJACKING', true),
+            'channels' => ['mail'],
+        ],
     ],
     'two_factor' => [
         'enabled' => env('SENTINEL_LOG_2FA_ENABLED', false),
-        'middleware' => 'sentinel-log.2fa', // Alias for the middleware
+        'middleware' => 'sentinel-log.2fa',
+    ],
+    'sessions' => [
+        'enabled' => env('SENTINEL_LOG_SESSIONS_ENABLED', true),
+        'max_active' => 5, // Max concurrent sessions
     ],
 ];
