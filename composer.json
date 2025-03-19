@@ -1,12 +1,12 @@
 {
-  "name": "yourname/laravel-sentinellog",
+  "name": "harryes/laravel-sentinellog",
   "description": "A vigilant authentication logging and security package for Laravel 8-12.",
   "type": "laravel-package",
   "license": "MIT",
   "authors": [
     {
-      "name": "Your Name",
-      "email": "your.email@example.com"
+      "name": "Harish Pant",
+      "email": "pantharish120@gmail.com"
     }
   ],
   "require": {
@@ -24,7 +24,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "YourName\\SentinelLog\\SentinelLogServiceProvider"
+        "Harryes\\SentinelLog\\SentinelLogServiceProvider"
       ]
     }
   },

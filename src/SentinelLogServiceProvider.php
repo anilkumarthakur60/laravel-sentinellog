@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourName\SentinelLog;
+namespace Harryes\SentinelLog;
 
 use Illuminate\Support\ServiceProvider;
 
