@@ -1,4 +1,2 @@
-# Laravel Package Specific
 vendor/
 composer.lock
-*.log
