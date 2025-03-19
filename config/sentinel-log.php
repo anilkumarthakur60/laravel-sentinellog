@@ -41,12 +41,17 @@ return [
     ],
     'brute_force' => [
         'enabled' => env('SENTINEL_LOG_BRUTE_FORCE_ENABLED', true),
-        'threshold' => 5, // Max failed attempts
-        'window' => 15, // Minutes
-        'block_duration' => 24, // Hours
+        'threshold' => 5,
+        'window' => 15,
+        'block_duration' => 24,
     ],
     'geo_fencing' => [
         'enabled' => env('SENTINEL_LOG_GEO_FENCING_ENABLED', false),
-        'allowed_countries' => ['United States', 'Canada'], // Example
+        'allowed_countries' => ['United States', 'Canada'],
+    ],
+    'sso' => [
+        'enabled' => env('SENTINEL_LOG_SSO_ENABLED', false),
+        'client_id' => env('SENTINEL_LOG_SSO_CLIENT_ID', 'default_client'),
+        'token_lifetime' => 24, // Hours
     ],
 ];
