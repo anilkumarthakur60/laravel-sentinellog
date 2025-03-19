@@ -7,10 +7,12 @@ namespace Harryes\SentinelLog;
 use Harryes\SentinelLog\Listeners\LogFailedLogin;
 use Harryes\SentinelLog\Listeners\LogSuccessfulLogin;
 use Harryes\SentinelLog\Listeners\LogSuccessfulLogout;
+use Harryes\SentinelLog\Middleware\EnforceTwoFactorAuthentication;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class SentinelLogServiceProvider extends ServiceProvider
@@ -27,5 +29,10 @@ class SentinelLogServiceProvider extends ServiceProvider
         Event::listen(Login::class, LogSuccessfulLogin::class);
         Event::listen(Logout::class, LogSuccessfulLogout::class);
         Event::listen(Failed::class, LogFailedLogin::class);
+
+        // Register 2FA middleware
+        if (config('sentinel-log.two_factor.enabled', false)) {
+            Route::aliasMiddleware('sentinel-log.2fa', EnforceTwoFactorAuthentication::class);
+        }
     }
 }
