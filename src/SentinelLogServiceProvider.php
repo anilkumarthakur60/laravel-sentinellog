@@ -4,32 +4,28 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog;
 
+use Harryes\SentinelLog\Listeners\LogFailedLogin;
+use Harryes\SentinelLog\Listeners\LogSuccessfulLogin;
+use Harryes\SentinelLog\Listeners\LogSuccessfulLogout;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class SentinelLogServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any package services.
-     */
     public function register(): void
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/sentinel-log.php',
-            'sentinel-log'
-        );
+        $this->mergeConfigFrom(__DIR__ . '/../config/sentinel-log.php', 'sentinel-log');
     }
 
-    /**
-     * Bootstrap any package services.
-     */
     public function boot(): void
     {
-        // Publish the config file
-        $this->publishes([
-            __DIR__ . '/../config/sentinel-log.php' => config_path('sentinel-log.php'),
-        ], 'sentinel-log-config');
-
-        // Prepare for migrations (to be added in Step 2)
+        $this->publishes([__DIR__ . '/../config/sentinel-log.php' => config_path('sentinel-log.php')], 'sentinel-log-config');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        Event::listen(Login::class, LogSuccessfulLogin::class);
+        Event::listen(Logout::class, LogSuccessfulLogout::class);
+        Event::listen(Failed::class, LogFailedLogin::class);
     }
 }
