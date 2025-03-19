@@ -18,13 +18,17 @@ return [
         'new_device' => [
             'enabled' => env('SENTINEL_LOG_NOTIFY_NEW_DEVICE', true),
             'channels' => ['mail'],
-            'threshold' => 1, // Notify after 1 new device login
+            'threshold' => 1,
         ],
         'failed_attempt' => [
             'enabled' => env('SENTINEL_LOG_NOTIFY_FAILED_ATTEMPT', true),
             'channels' => ['mail'],
-            'threshold' => 3, // Notify after 3 failed attempts within a time frame
-            'window' => 60, // Time window in minutes for failed attempts
+            'threshold' => 3,
+            'window' => 60,
         ],
+    ],
+    'two_factor' => [
+        'enabled' => env('SENTINEL_LOG_2FA_ENABLED', false),
+        'middleware' => 'sentinel-log.2fa', // Alias for the middleware
     ],
 ];
