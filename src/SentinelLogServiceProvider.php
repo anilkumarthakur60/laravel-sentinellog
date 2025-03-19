@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Harryes\SentinelLog;
 
 use Harryes\SentinelLog\Listeners\LogFailedLogin;
+use Harryes\SentinelLog\Listeners\LogSsoLogin;
 use Harryes\SentinelLog\Listeners\LogSuccessfulLogin;
 use Harryes\SentinelLog\Listeners\LogSuccessfulLogout;
 use Harryes\SentinelLog\Middleware\EnforceTwoFactorAuthentication;
@@ -27,10 +28,10 @@ class SentinelLogServiceProvider extends ServiceProvider
         $this->publishes([__DIR__ . '/../config/sentinel-log.php' => config_path('sentinel-log.php')], 'sentinel-log-config');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         Event::listen(Login::class, LogSuccessfulLogin::class);
+        Event::listen(Login::class, LogSsoLogin::class); // Add SSO listener
         Event::listen(Logout::class, LogSuccessfulLogout::class);
         Event::listen(Failed::class, LogFailedLogin::class);
 
-        // Register 2FA middleware
         if (config('sentinel-log.two_factor.enabled', false)) {
             Route::aliasMiddleware('sentinel-log.2fa', EnforceTwoFactorAuthentication::class);
         }
