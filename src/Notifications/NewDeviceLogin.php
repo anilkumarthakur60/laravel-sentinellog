@@ -20,32 +20,26 @@ class NewDeviceLogin extends Notification
         $this->log = $log;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     */
     public function via(object $notifiable): array
     {
         return config('sentinel-log.notifications.new_device.channels', ['mail']);
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
         $location = $this->log->location ?? [];
+        $city = $location['city'] ?? 'Unknown';
+        $country = $location['country'] ?? 'Unknown';
+
         return (new MailMessage)
             ->subject('New Device Login Detected')
             ->line('A login was detected from a new device.')
             ->line("IP: {$this->log->ip_address}")
-            ->line("Location: {$location['city'] ?? 'Unknown'}, {$location['country'] ?? 'Unknown'}")
+            ->line("Location: {$city}, {$country}")
             ->line("Time: {$this->log->event_at}")
             ->action('Review Activity', url('/'));
     }
 
-    /**
-     * Get the array representation of the notification.
-     */
     public function toArray(object $notifiable): array
     {
         return [

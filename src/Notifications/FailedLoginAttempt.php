@@ -22,32 +22,26 @@ class FailedLoginAttempt extends Notification
         $this->attemptCount = $attemptCount;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     */
     public function via(object $notifiable): array
     {
         return config('sentinel-log.notifications.failed_attempt.channels', ['mail']);
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
         $location = $this->log->location ?? [];
+        $city = $location['city'] ?? 'Unknown';
+        $country = $location['country'] ?? 'Unknown';
+
         return (new MailMessage)
             ->subject('Multiple Failed Login Attempts')
             ->line("There have been {$this->attemptCount} failed login attempts on your account.")
             ->line("Last Attempt IP: {$this->log->ip_address}")
-            ->line("Location: {$location['city'] ?? 'Unknown'}, {$location['country'] ?? 'Unknown'}")
+            ->line("Location: {$city}, {$country}")
             ->line("Time: {$this->log->event_at}")
             ->action('Secure Your Account', url('/'));
     }
 
-    /**
-     * Get the array representation of the notification.
-     */
     public function toArray(object $notifiable): array
     {
         return [
