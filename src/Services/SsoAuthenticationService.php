@@ -10,9 +10,6 @@ use Illuminate\Support\Str;
 
 class SsoAuthenticationService
 {
-    /**
-     * Generate an SSO token for a user.
-     */
     public function generateToken($authenticatable, string $clientId): string
     {
         $token = Str::random(64);
@@ -27,9 +24,6 @@ class SsoAuthenticationService
         return $token;
     }
 
-    /**
-     * Validate an SSO token and log in the user.
-     */
     public function validateToken(string $token, string $clientId): ?object
     {
         $ssoToken = SsoToken::where('token', $token)
@@ -38,9 +32,8 @@ class SsoAuthenticationService
 
         if ($ssoToken && $ssoToken->isValid()) {
             $user = $ssoToken->authenticatable;
-            Auth::login($user);
             $ssoToken->delete(); // One-time use
-            return $user;
+            return $user; // Return user without logging in here
         }
 
         return null;

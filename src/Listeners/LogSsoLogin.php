@@ -11,6 +11,7 @@ use Harryes\SentinelLog\Services\GeolocationService;
 use Harryes\SentinelLog\Services\SessionTrackingService;
 use Harryes\SentinelLog\Services\SsoAuthenticationService;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Auth;
 
 class LogSsoLogin
 {
@@ -34,10 +35,10 @@ class LogSsoLogin
         $this->ssoService = $ssoService;
     }
 
-    public function handle(Login $event): void  // Fix: Match the correct type
+    public function handle(Login $event): void
     {
-        if (!config('sentinel-log.sso.enabled', false) || !request()->has('sso_token')) {
-            return; // Handled by LogSuccessfulLogin if not SSO
+        if (!config('sentinel-log.sso.enabled', false) || !request()->has('sso_token') || Auth::check()) {
+            return; // Exit if not SSO, no token, or already logged in
         }
 
         $this->bruteForceService->checkGeoFence();
@@ -46,6 +47,7 @@ class LogSsoLogin
             abort(401, 'Invalid SSO token.');
         }
 
+        // Log SSO event manually without re-triggering Auth::login()
         $session = $this->sessionService->track($user);
         $log = AuthenticationLog::create([
             'authenticatable_id' => $user->getKey(),
