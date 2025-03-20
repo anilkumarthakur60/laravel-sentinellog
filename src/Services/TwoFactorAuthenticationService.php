@@ -20,7 +20,7 @@ class TwoFactorAuthenticationService
     /**
      * Generate a TOTP code for a secret.
      */
-    public function generateCode(string $secret, int $timestamp = null): string
+    public function generateCode(string $secret, ?int $timestamp = null): string
     {
         $secret = Base32::decodeUpper($secret);
         $timestamp = $timestamp ?? floor(time() / 30); // 30-second window
@@ -38,7 +38,7 @@ class TwoFactorAuthenticationService
      */
     public function verifyCode(string $secret, string $code, int $window = 1): bool
     {
-        $timestamp = floor(time() / 30);
+        $timestamp = (int) floor(time() / 30); // Cast to int
 
         for ($i = -$window; $i <= $window; $i++) {
             $expected = $this->generateCode($secret, $timestamp + $i);
