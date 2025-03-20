@@ -45,9 +45,10 @@ return [
         'window' => 15,
         'block_duration' => 24,
     ],
+    'geo_test_ip' => env('SENTINEL_LOG_GEO_TEST_IP', null),
     'geo_fencing' => [
         'enabled' => env('SENTINEL_LOG_GEO_FENCING_ENABLED', false),
-        'allowed_countries' => ['United States', 'Canada'],
+        'allowed_countries' => explode(',', env('SENTINEL_LOG_GEO_FENCING_ALLOWED_COUNTRIES', 'United States,Canada')),
     ],
     'sso' => [
         'enabled' => env('SENTINEL_LOG_SSO_ENABLED', false),

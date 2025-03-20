@@ -6,6 +6,7 @@ namespace Harryes\SentinelLog\Services;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class GeolocationService
 {
@@ -21,26 +22,47 @@ class GeolocationService
      */
     public function getLocation(string $ip): ?array
     {
-        if ($ip === '127.0.0.1' || $ip === '::1') {
-            return ['country' => 'Local', 'city' => 'Localhost'];
+        if (in_array($ip, ['127.0.0.1', '::1'])) {
+            // Use a configurable test IP or fallback
+            $testIp = config('sentinel-log.geo_test_ip', null);
+            if ($testIp) {
+                $ip = $testIp;  // Override with test IP if set
+            } else {
+                return [
+                    'country' => 'Local',
+                    'city' => 'Localhost',
+                    'lat' => 0,
+                    'lon' => 0,
+                ];
+            }
         }
 
         try {
             $cacheKey = "sentinel_log_geo_{$ip}";
             $data = Cache::remember($cacheKey, 3600, function () use ($ip) {
-                $response = $this->client->get($ip);
-                return json_decode($response->getBody()->getContents(), true);
+                $response = Http::get("http://ip-api.com/json/{$ip}?fields=country,city,lat,lon,query,status");
+                return $response->json();
             });
 
-            return [
-                'country' => $data['country'] ?? null,
-                'region' => $data['regionName'] ?? null,
-                'city' => $data['city'] ?? null,
-                'lat' => $data['lat'] ?? null,
-                'lon' => $data['lon'] ?? null,
-            ];
+            if ($data['status'] === 'success') {
+                return [
+                    'country' => $data['country'] ?? 'Unknown',
+                    'city' => $data['city'] ?? 'Unknown',
+                    'lat' => $data['lat'] ?? 0,
+                    'lon' => $data['lon'] ?? 0,
+                    'ip' => $data['query'] ?? $ip,
+                ];
+            }
         } catch (\Exception $e) {
             return null;
         }
+
+        return [
+            'country' => 'Unknown',
+            'city' => 'Unknown',
+            'lat' => 0,
+            'lon' => 0,
+            'ip' => $ip,
+        ];
     }
 }
