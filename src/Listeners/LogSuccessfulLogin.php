@@ -72,8 +72,12 @@ class LogSuccessfulLogin
             ]);
         }
 
-        if ($event->user->isNewDevice($log->device_info['hash'] ?? '')) {
-            $event->user->notifyNewDevice($log);
+        if (config('sentinel-log.notifications.new_device.enabled', false)) {
+            $deviceInfo = $log->device_info ?? [];
+            $hash = $deviceInfo['hash'] ?? '';
+            if ($this->fingerprintService->isNewDevice($event->user, $hash)) {
+                Notification::send($event->user, new NewDeviceLogin($log));
+            }
         }
 
         if (config('sentinel-log.sessions.enabled', true)) {

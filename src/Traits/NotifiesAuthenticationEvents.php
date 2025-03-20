@@ -24,27 +24,6 @@ trait NotifiesAuthenticationEvents
     }
 
     /**
-     * Check if this is a new device based on fingerprint hash.
-     */
-    public function isNewDevice(string $hash): bool
-    {
-        return !$this->authenticationLogs()
-            ->where('is_successful', true)
-            ->whereJsonContains('device_info->hash', $hash)
-            ->exists();
-    }
-
-    /**
-     * Notify about a new device login.
-     */
-    public function notifyNewDevice(AuthenticationLog $log): void
-    {
-        if (config('sentinel-log.notifications.new_device.enabled', false)) {
-            Notification::send($this, new NewDeviceLogin($log));
-        }
-    }
-
-    /**
      * Notify about repeated failed login attempts.
      */
     public function notifyFailedAttempt(AuthenticationLog $log): void

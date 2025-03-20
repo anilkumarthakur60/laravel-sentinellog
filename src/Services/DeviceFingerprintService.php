@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog\Services;
 
+use Harryes\SentinelLog\Models\AuthenticationLog;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 
 class DeviceFingerprintService
@@ -29,6 +31,18 @@ class DeviceFingerprintService
             'platform' => $this->guessPlatform($headers['user-agent'][0] ?? ''),
             'hash' => $this->createHash(),
         ];
+    }
+
+    /**
+     * Check if this is a new device based on fingerprint hash.
+     */
+    public function isNewDevice(Authenticatable $user, string $hash): bool
+    {
+        return !AuthenticationLog::where('authenticatable_id', $user->getKey())
+            ->where('authenticatable_type', get_class($user))
+            ->where('is_successful', true)
+            ->whereJsonContains('device_info->hash', $hash)
+            ->exists();
     }
 
     /**
