@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('{{table_name}}', function (Blueprint $table) {
+        Schema::create(config('sentinel-log.table_name', 'authentication_logs'), function (Blueprint $table) {
             $table->id();
             $table->string('authenticatable_type')->nullable();
             $table->unsignedBigInteger('authenticatable_id')->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamp('cleared_at')->nullable();
             $table->timestamps();
 
-            $table->index(['authenticatable_type', 'authenticatable_id'], '{{table_name}}_auth_type_auth_id_idx');
+            $table->index(['authenticatable_type', 'authenticatable_id'], config('sentinel-log.table_name', 'authentication_logs').'_auth_type_auth_id_idx');
             $table->index('event_name');
         });
     }
