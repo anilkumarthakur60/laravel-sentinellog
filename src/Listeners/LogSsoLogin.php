@@ -10,7 +10,7 @@ use Harryes\SentinelLog\Services\DeviceFingerprintService;
 use Harryes\SentinelLog\Services\GeolocationService;
 use Harryes\SentinelLog\Services\SessionTrackingService;
 use Harryes\SentinelLog\Services\SsoAuthenticationService;
-use Illuminate\Foundation\Auth\Events\Login;
+use Illuminate\Auth\Events\Login;
 
 class LogSsoLogin
 {
@@ -34,7 +34,7 @@ class LogSsoLogin
         $this->ssoService = $ssoService;
     }
 
-    public function handle(Login $event): void
+    public function handle(Login $event): void  // Fix: Match the correct type
     {
         if (!config('sentinel-log.sso.enabled', false) || !request()->has('sso_token')) {
             return; // Handled by LogSuccessfulLogin if not SSO
