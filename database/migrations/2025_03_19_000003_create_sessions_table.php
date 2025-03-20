@@ -20,7 +20,7 @@ return new class extends Migration
             $table->json('location')->nullable();
             $table->timestamp('last_activity')->useCurrent();
             $table->timestamps();
-            $table->index(['authenticatable_type', 'authenticatable_id']);
+            $table->index(['authenticatable_type', 'authenticatable_id'], 'sentinel_sessions_auth_type_auth_id_idx');
         });
     }
 
