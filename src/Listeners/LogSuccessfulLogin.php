@@ -42,7 +42,6 @@ class LogSuccessfulLogin
             return;
         }
 
-        $this->bruteForceService->checkGeoFence(); // Check geo-fencing first
         $session = $this->sessionService->track($event->user);
         $log = AuthenticationLog::create([
             'authenticatable_id' => $event->user->getKey(),
@@ -56,6 +55,7 @@ class LogSuccessfulLogin
             'is_successful' => true,
         ]);
 
+        $this->bruteForceService->checkGeoFence(); // Check geo-fencing on success
         $this->bruteForceService->clearAttempts(request()->ip()); // Clear attempts on success
 
         if ($event->user->two_factor_secret && !$event->user->session()->has('2fa_verified')) {

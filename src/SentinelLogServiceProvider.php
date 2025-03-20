@@ -9,6 +9,7 @@ use Harryes\SentinelLog\Listeners\LogSsoLogin;
 use Harryes\SentinelLog\Listeners\LogSuccessfulLogin;
 use Harryes\SentinelLog\Listeners\LogSuccessfulLogout;
 use Harryes\SentinelLog\Middleware\EnforceTwoFactorAuthentication;
+use Harryes\SentinelLog\Middleware\EnforceGeoFencing;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -34,6 +35,9 @@ class SentinelLogServiceProvider extends ServiceProvider
 
         if (config('sentinel-log.two_factor.enabled', false)) {
             Route::aliasMiddleware('sentinel-log.2fa', EnforceTwoFactorAuthentication::class);
+        }
+        if (config('sentinel-log.geo_fencing.enabled', false)) {
+            Route::aliasMiddleware('sentinel-log.geofence', EnforceGeoFencing::class);
         }
     }
 }
