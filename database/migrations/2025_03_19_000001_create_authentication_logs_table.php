@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamp('event_at')->nullable()->useCurrent();
             $table->timestamp('cleared_at')->nullable();
             $table->timestamps();
-            $table->index(['authenticatable_type', 'authenticatable_id']);
+            $table->index(['authenticatable_type', 'authenticatable_id'], 'auth_logs_auth_type_auth_id_idx');
             $table->index('event_name');
         });
     }
