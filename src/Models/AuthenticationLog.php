@@ -44,6 +44,6 @@ class AuthenticationLog extends Model
 
     public function session(): BelongsTo
     {
-        return $this->belongsTo(Session::class, 'session_id', 'session_id');
+        return $this->belongsTo(SentinelSession::class, 'session_id', 'session_id');
     }
 }

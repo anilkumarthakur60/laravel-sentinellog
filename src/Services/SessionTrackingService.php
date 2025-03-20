@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog\Services;
 
-use Harryes\SentinelLog\Models\Session;
+use Harryes\SentinelLog\Models\SentinelSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,11 +24,11 @@ class SessionTrackingService
     /**
      * Track or update a session.
      */
-    public function track($authenticatable): Session
+    public function track($authenticatable): SentinelSession
     {
         $sessionId = session()->getId();
 
-        $session = Session::updateOrCreate(
+        $session = SentinelSession::updateOrCreate(
             ['session_id' => $sessionId],
             [
                 'authenticatable_id' => $authenticatable->getKey(),
@@ -47,14 +47,14 @@ class SessionTrackingService
     /**
      * Check for potential session hijacking.
      */
-    public function detectHijacking(Session $currentSession): ?array
+    public function detectHijacking(SentinelSession $currentSession): ?array
     {
         $user = Auth::user();
         if (!$user) {
             return null;
         }
 
-        $activeSessions = Session::where('authenticatable_id', $user->getKey())
+        $activeSessions = SentinelSession::where('authenticatable_id', $user->getKey())
             ->where('authenticatable_type', get_class($user))
             ->where('session_id', '!=', $currentSession->session_id)
             ->where('last_activity', '>=', now()->subMinutes(30))

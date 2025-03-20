@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Session extends Model
+class SentinelSession extends Model
 {
     protected $table = 'sentinel_sessions';
 

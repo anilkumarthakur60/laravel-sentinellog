@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog\Notifications;
 
-use Harryes\SentinelLog\Models\Session;
+use Harryes\SentinelLog\Models\SentinelSession;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -13,10 +13,10 @@ class SessionHijackingDetected extends Notification
 {
     use Queueable;
 
-    protected Session $session;
+    protected SentinelSession $session;
     protected string $reason;
 
-    public function __construct(Session $session, string $reason)
+    public function __construct(SentinelSession $session, string $reason)
     {
         $this->session = $session;
         $this->reason = $reason;
@@ -34,7 +34,7 @@ class SessionHijackingDetected extends Notification
         $country = $location['country'] ?? 'Unknown';
 
         return (new MailMessage)
-            ->subject('Potential Session Hijacking Detected')
+            ->subject('Potential SentinelSession Hijacking Detected')
             ->line('We detected suspicious activity on your account.')
             ->line("Reason: {$this->reason}")
             ->line("IP: {$this->session->ip_address}")
