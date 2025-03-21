@@ -7,6 +7,7 @@ namespace Harryes\SentinelLog\Services;
 use Harryes\SentinelLog\Models\AuthenticationLog;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DeviceFingerprintService
 {
@@ -41,7 +42,7 @@ class DeviceFingerprintService
         return !AuthenticationLog::where('authenticatable_id', $user->getKey())
             ->where('authenticatable_type', get_class($user))
             ->where('is_successful', true)
-            ->whereRaw("json_extract(device_info, '$.hash') = ?", [$hash])
+            ->where('device_info->hash', $hash) // Direct JSON key lookup
             ->exists();
     }
 

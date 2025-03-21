@@ -13,6 +13,7 @@ use Harryes\SentinelLog\Services\GeolocationService;
 use Harryes\SentinelLog\Services\SessionTrackingService;
 use Harryes\SentinelLog\Services\TwoFactorAuthenticationService;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 
