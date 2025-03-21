@@ -12,7 +12,8 @@ return new class extends Migration
     {
         Schema::create('sentinel_sso_tokens', function (Blueprint $table) {
             $table->id();
-            $table->morphs('authenticatable');
+            $table->string('authenticatable_type')->nullable();
+            $table->unsignedBigInteger('authenticatable_id')->nullable();
             $table->string('token', 64)->unique();
             $table->string('client_id')->index();
             $table->timestamp('issued_at')->useCurrent();

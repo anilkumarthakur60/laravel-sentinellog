@@ -12,7 +12,8 @@ return new class extends Migration
     {
         Schema::create('sentinel_sessions', function (Blueprint $table) {
             $table->id();
-            $table->morphs('authenticatable');
+            $table->string('authenticatable_type')->nullable();
+            $table->unsignedBigInteger('authenticatable_id')->nullable();
             $table->string('session_id')->unique();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
