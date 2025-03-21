@@ -41,7 +41,7 @@ class DeviceFingerprintService
         return !AuthenticationLog::where('authenticatable_id', $user->getKey())
             ->where('authenticatable_type', get_class($user))
             ->where('is_successful', true)
-            ->whereRaw("JSON_CONTAINS(device_info->'$.hash', ?)", [$hash])
+            ->whereRaw("json_extract(device_info, '$.hash') = ?", [$hash])
             ->exists();
     }
 
