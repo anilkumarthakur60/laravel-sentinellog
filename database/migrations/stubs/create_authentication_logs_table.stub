@@ -27,7 +27,7 @@ return new class extends Migration
             $table->timestamp('event_at')->nullable()->useCurrent(); // When the event occurred
             $table->timestamp('cleared_at')->nullable(); // When cleared by user (if applicable)
             $table->timestamps();
-            $table->index(['authenticatable_type', 'authenticatable_id']);
+            $table->index(['authenticatable_type', 'authenticatable_id'], config('sentinel-log.table_name', 'authentication_logs').'_auth_type_auth_id_idx');
             $table->index('event_name');
         });
     }
