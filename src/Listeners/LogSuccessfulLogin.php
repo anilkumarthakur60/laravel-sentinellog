@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Harryes\SentinelLog\Listeners;
 
 use Harryes\SentinelLog\Models\AuthenticationLog;
+use Harryes\SentinelLog\Notifications\NewDeviceLogin;
 use Harryes\SentinelLog\Notifications\SessionHijackingDetected;
 use Harryes\SentinelLog\Services\BruteForceProtectionService;
 use Harryes\SentinelLog\Services\DeviceFingerprintService;
