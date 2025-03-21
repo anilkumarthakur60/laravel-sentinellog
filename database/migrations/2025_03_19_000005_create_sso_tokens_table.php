@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamp('issued_at')->useCurrent();
             $table->timestamp('expires_at');
             $table->timestamps();
+
+            $table->index(['authenticatable_type', 'authenticatable_id'], 'sentinel_sso_tokens_auth_type_auth_id_idx');
         });
     }
 
