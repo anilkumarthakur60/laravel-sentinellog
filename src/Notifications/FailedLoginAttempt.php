@@ -38,7 +38,7 @@ class FailedLoginAttempt extends Notification
             ->line("There have been {$this->attemptCount} failed login attempts on your account.")
             ->line("Last Attempt IP: {$this->log->ip_address}")
             ->line("Location: {$city}, {$country}")
-            ->line("Device: {$this->log->device_info['device']}")
+           ->line("Device: {$this->log->device_info['browser']}")
             ->line("Time: {$this->log->event_at}")
             ->action('Secure Your Account', url('/'));
     }

@@ -39,7 +39,7 @@ class SessionHijackingDetected extends Notification
             ->line("Reason: {$this->reason}")
             ->line("IP: {$this->session->ip_address}")
             ->line("Location: {$city}, {$country}")
-            ->line("Device: {$this->session->device_info['device']}")
+            ->line("Device: {$this->session->device_info['browser']}")
             ->line("Last Activity: {$this->session->last_activity}")
             ->action('Review Sessions', url('/sessions'));
     }
