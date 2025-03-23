@@ -36,6 +36,7 @@ class NewDeviceLogin extends Notification
             ->line('A login was detected from a new device.')
             ->line("IP: {$this->log->ip_address}")
             ->line("Location: {$city}, {$country}")
+            ->line("Device: {$this->log->device_info['device']}")
             ->line("Time: {$this->log->event_at}")
             ->action('Review Activity', url('/'));
     }
