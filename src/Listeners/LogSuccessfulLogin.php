@@ -43,6 +43,10 @@ class LogSuccessfulLogin
             return;
         }
 
+        if ($this->bruteForceService->isIpBlocked(request()->ip())) {
+            abort(403, 'Your IP has been blocked due to suspicious activity.');
+        }
+
         try {
             $session = $this->sessionService->track($event->user);
         } catch (\Exception $e) {

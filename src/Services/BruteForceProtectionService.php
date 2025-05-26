@@ -25,15 +25,35 @@ class BruteForceProtectionService
      */
     public function isIpBlocked(string $ip): bool
     {
+        if (!config('sentinel-log.brute_force.enabled', true)) {
+            return false;
+        }
+
         $blocked = BlockedIp::where('ip_address', $ip)->first();
         return $blocked && $blocked->isActive();
     }
 
     /**
-     * Check and enforce brute force protection.
+     * Get current attempt count for an IP.
+     */
+    public function getAttempts(string $ip): int
+    {
+        if (!config('sentinel-log.brute_force.enabled', true)) {
+            return 0;
+        }
+
+        return Cache::get("sentinel_brute_force_{$ip}", 0);
+    }
+
+    /**
+     * Check and enforce brute force protection for failed attempts.
      */
     public function checkBruteForce(): void
     {
+        if (!config('sentinel-log.brute_force.enabled', true)) {
+            return;
+        }
+
         $ip = $this->request->ip();
         if ($this->isIpBlocked($ip)) {
             abort(403, 'Your IP has been blocked due to suspicious activity.');
@@ -41,9 +61,10 @@ class BruteForceProtectionService
 
         $threshold = config('sentinel-log.brute_force.threshold', 5);
         $window = config('sentinel-log.brute_force.window', 15);
-
         $cacheKey = "sentinel_brute_force_{$ip}";
         $attempts = Cache::get($cacheKey, 0) + 1;
+
+        Cache::put($cacheKey, $attempts, now()->addMinutes($window));
 
         if ($attempts >= $threshold) {
             BlockedIp::create([
@@ -54,8 +75,6 @@ class BruteForceProtectionService
             Cache::forget($cacheKey);
             abort(403, 'Too many login attempts. Your IP is now blocked.');
         }
-
-        Cache::put($cacheKey, $attempts, now()->addMinutes($window));
     }
 
     /**
@@ -93,5 +112,6 @@ class BruteForceProtectionService
     public function clearAttempts(string $ip): void
     {
         Cache::forget("sentinel_brute_force_{$ip}");
+        BlockedIp::where('ip_address', $ip)->delete();
     }
 }
