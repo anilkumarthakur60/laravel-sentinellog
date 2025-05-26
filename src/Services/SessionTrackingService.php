@@ -22,12 +22,33 @@ class SessionTrackingService
     }
 
     /**
-     * Track or update a session.
+     * Track or update a session, enforcing max session limit.
      */
     public function track($authenticatable): SentinelSession
     {
+        if (!config('sentinel-log.sessions.enabled', true)) {
+            throw new \Exception('Session tracking is disabled');
+        }
+
         $sessionId = session()->getId();
 
+        // Check active sessions for the user
+        $maxSessions = config('sentinel-log.sessions.max_active', 5);
+        $activeSessions = SentinelSession::where('authenticatable_id', $authenticatable->getKey())
+            ->where('authenticatable_type', get_class($authenticatable))
+            ->count();
+
+        // Exclude current session from count if it exists
+        $currentSession = SentinelSession::where('session_id', $sessionId)->first();
+        if ($currentSession) {
+            $activeSessions = max(0, $activeSessions - 1); // Don't count the session being updated
+        }
+
+        if ($activeSessions >= $maxSessions) {
+            throw new \Exception('Maximum active sessions exceeded');
+        }
+
+        // Create or update session
         $session = SentinelSession::updateOrCreate(
             ['session_id' => $sessionId],
             [

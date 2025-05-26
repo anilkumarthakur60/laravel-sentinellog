@@ -30,8 +30,8 @@ class SessionHijackingDetected extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $location = $this->session->location ?? [];
-        $city = $location['city'] ?? 'Unknown';
-        $country = $location['country'] ?? 'Unknown';
+        $city = @$location['city'] ?? 'Unknown';
+        $country = @$location['country'] ?? 'Unknown';
 
         return (new MailMessage)
             ->subject('Potential SentinelSession Hijacking Detected')

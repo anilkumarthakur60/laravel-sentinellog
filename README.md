@@ -106,7 +106,7 @@ Add these to `.env`:
 ```
 
 ## Usage Examples
-
+ 
 ### 2FA Setup
 Generate a 2FA secret and QR code:
 ```php

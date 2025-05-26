@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Harryes\SentinelLog\Listeners;
 
 use Harryes\SentinelLog\Models\AuthenticationLog;
-use Harryes\SentinelLog\Notifications\SessionHijackingDetected;
 use Harryes\SentinelLog\Notifications\NewDeviceLogin;
+use Harryes\SentinelLog\Notifications\SessionHijackingDetected;
 use Harryes\SentinelLog\Services\BruteForceProtectionService;
 use Harryes\SentinelLog\Services\DeviceFingerprintService;
 use Harryes\SentinelLog\Services\GeolocationService;
@@ -43,17 +43,17 @@ class LogSuccessfulLogin
             return;
         }
 
-        $session = $this->sessionService->track($event->user);
+        try {
+            $session = $this->sessionService->track($event->user);
+        } catch (\Exception $e) {
+            abort(403, $e->getMessage()); // e.g., "Maximum active sessions exceeded"
+        }
 
-        // Generate device info once and reuse
         $deviceInfo = $this->fingerprintService->generate();
         $hash = $deviceInfo['hash'] ?? '';
-
-        // Check for new device BEFORE creating the log
         $isNewDevice = config('sentinel-log.notifications.new_device.enabled', false) &&
             $this->fingerprintService->isNewDevice($event->user, $hash);
 
-        // Create the log AFTER the new device check
         $log = AuthenticationLog::create([
             'authenticatable_id' => $event->user->getKey(),
             'authenticatable_type' => get_class($event->user),
@@ -83,7 +83,6 @@ class LogSuccessfulLogin
             ]);
         }
 
-        // Notify if it's a new device
         if ($isNewDevice) {
             Notification::send($event->user, new NewDeviceLogin($log));
         }
@@ -97,7 +96,7 @@ class LogSuccessfulLogin
                     'authenticatable_type' => get_class($event->user),
                     'session_id' => $session->session_id,
                     'event_name' => 'hijacking_detected',
-                    'ip_address' => request()->ip(), // Fixed typo 'ip_addressSing'
+                    'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
                     'device_info' => $this->fingerprintService->generate(),
                     'location' => $this->geoService->getLocation(request()->ip()),
