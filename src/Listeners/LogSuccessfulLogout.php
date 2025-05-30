@@ -13,7 +13,9 @@ use Illuminate\Auth\Events\Logout;
 class LogSuccessfulLogout
 {
     protected DeviceFingerprintService $fingerprintService;
+
     protected GeolocationService $geoService;
+
     protected SessionTrackingService $sessionService;
 
     public function __construct(
@@ -28,7 +30,7 @@ class LogSuccessfulLogout
 
     public function handle(Logout $event): void
     {
-        if (!config('sentinel-log.enabled', true) || !config('sentinel-log.events.logout', true)) {
+        if (! config('sentinel-log.enabled', true) || ! config('sentinel-log.events.logout', true)) {
             return;
         }
 

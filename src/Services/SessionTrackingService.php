@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog\Services;
 
+use Exception;
 use Harryes\SentinelLog\Models\SentinelSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,9 @@ use Illuminate\Support\Facades\Auth;
 class SessionTrackingService
 {
     protected Request $request;
+
     protected DeviceFingerprintService $fingerprintService;
+
     protected GeolocationService $geoService;
 
     public function __construct(Request $request, DeviceFingerprintService $fingerprintService, GeolocationService $geoService)
@@ -26,8 +29,8 @@ class SessionTrackingService
      */
     public function track($authenticatable): SentinelSession
     {
-        if (!config('sentinel-log.sessions.enabled', true)) {
-            throw new \Exception('Session tracking is disabled');
+        if (! config('sentinel-log.sessions.enabled', true)) {
+            throw new Exception('Session tracking is disabled');
         }
 
         $sessionId = session()->getId();
@@ -45,7 +48,7 @@ class SessionTrackingService
         }
 
         if ($activeSessions >= $maxSessions) {
-            throw new \Exception('Maximum active sessions exceeded');
+            throw new Exception('Maximum active sessions exceeded');
         }
 
         // Create or update session
@@ -71,7 +74,7 @@ class SessionTrackingService
     public function detectHijacking(SentinelSession $currentSession): ?array
     {
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 

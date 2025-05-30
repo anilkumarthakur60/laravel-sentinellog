@@ -16,9 +16,13 @@ use Illuminate\Support\Facades\Auth;
 class LogSsoLogin
 {
     protected DeviceFingerprintService $fingerprintService;
+
     protected GeolocationService $geoService;
+
     protected SessionTrackingService $sessionService;
+
     protected BruteForceProtectionService $bruteForceService;
+
     protected SsoAuthenticationService $ssoService;
 
     public function __construct(
@@ -37,13 +41,13 @@ class LogSsoLogin
 
     public function handle(Login $event): void
     {
-        if (!config('sentinel-log.sso.enabled', false) || !request()->has('sso_token') || Auth::check()) {
+        if (! config('sentinel-log.sso.enabled', false) || ! request()->has('sso_token') || Auth::check()) {
             return; // Exit if not SSO, no token, or already logged in
         }
 
         $this->bruteForceService->checkGeoFence();
         $user = $this->ssoService->validateToken(request('sso_token'), config('sentinel-log.sso.client_id', 'default_client'));
-        if (!$user) {
+        if (! $user) {
             abort(401, 'Invalid SSO token.');
         }
 

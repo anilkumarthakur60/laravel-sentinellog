@@ -13,7 +13,9 @@ use Illuminate\Auth\Events\Failed;
 class LogFailedLogin
 {
     protected DeviceFingerprintService $fingerprintService;
+
     protected GeolocationService $geoService;
+
     protected BruteForceProtectionService $bruteForceService;
 
     public function __construct(
@@ -28,7 +30,7 @@ class LogFailedLogin
 
     public function handle(Failed $event): void
     {
-        if (!config('sentinel-log.enabled', true) || !config('sentinel-log.events.failed', true)) {
+        if (! config('sentinel-log.enabled', true) || ! config('sentinel-log.events.failed', true)) {
             return;
         }
 

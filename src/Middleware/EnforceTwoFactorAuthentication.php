@@ -23,7 +23,7 @@ class EnforceTwoFactorAuthentication
         $user = Auth::user();
 
         if ($user && $user->two_factor_secret && $user->two_factor_enabled_at) {
-            if (!$request->session()->has('2fa_verified')) {
+            if (! $request->session()->has('2fa_verified')) {
                 return redirect()->route('2fa.verify');
             }
         }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 class BruteForceProtectionService
 {
     protected Request $request;
+
     protected GeolocationService $geoService;
 
     public function __construct(Request $request, GeolocationService $geoService)
@@ -25,11 +26,12 @@ class BruteForceProtectionService
      */
     public function isIpBlocked(string $ip): bool
     {
-        if (!config('sentinel-log.brute_force.enabled', true)) {
+        if (! config('sentinel-log.brute_force.enabled', true)) {
             return false;
         }
 
         $blocked = BlockedIp::where('ip_address', $ip)->first();
+
         return $blocked && $blocked->isActive();
     }
 
@@ -38,7 +40,7 @@ class BruteForceProtectionService
      */
     public function getAttempts(string $ip): int
     {
-        if (!config('sentinel-log.brute_force.enabled', true)) {
+        if (! config('sentinel-log.brute_force.enabled', true)) {
             return 0;
         }
 
@@ -50,7 +52,7 @@ class BruteForceProtectionService
      */
     public function checkBruteForce(): void
     {
-        if (!config('sentinel-log.brute_force.enabled', true)) {
+        if (! config('sentinel-log.brute_force.enabled', true)) {
             return;
         }
 
@@ -82,7 +84,7 @@ class BruteForceProtectionService
      */
     public function checkGeoFence(): void
     {
-        if (!config('sentinel-log.geo_fencing.enabled', false)) {
+        if (! config('sentinel-log.geo_fencing.enabled', false)) {
             return;
         }
 
@@ -94,7 +96,7 @@ class BruteForceProtectionService
         $location = $this->geoService->getLocation($this->request->ip());
         $country = $location['country'] ?? null;
 
-        if ($country && !in_array($country, $allowedCountries, true)) {
+        if ($country && ! in_array($country, $allowedCountries, true)) {
             AuthenticationLog::create([
                 'event_name' => 'geo_fence_blocked',
                 'ip_address' => $this->request->ip(),

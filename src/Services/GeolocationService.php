@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog\Services;
 
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -41,6 +42,7 @@ class GeolocationService
             $cacheKey = "sentinel_log_geo_{$ip}";
             $data = Cache::remember($cacheKey, 3600, function () use ($ip) {
                 $response = Http::get("http://ip-api.com/json/{$ip}?fields=country,city,lat,lon,query,status");
+
                 return $response->json();
             });
 
@@ -53,7 +55,7 @@ class GeolocationService
                     'ip' => $data['query'] ?? $ip,
                 ];
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
 

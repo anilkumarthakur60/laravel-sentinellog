@@ -44,7 +44,7 @@ class DeviceFingerprintService
                 'authenticatable_id' => $user->getKey(),
                 'authenticatable_type' => get_class($user),
                 'is_successful' => true,
-                'hash' => $hash
+                'hash' => $hash,
             ]
         );
         Log::info('isNewDevice',
@@ -58,9 +58,10 @@ class DeviceFingerprintService
                 ->where('authenticatable_type', get_class($user))
                 ->where('is_successful', true)
                 ->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(device_info, "$.hash")) = ?', [$hash])
-                ->exists()
+                ->exists(),
         ]);
-        return !AuthenticationLog::where('authenticatable_id', $user->getKey())
+
+        return ! AuthenticationLog::where('authenticatable_id', $user->getKey())
             ->where('authenticatable_type', get_class($user))
             ->where('is_successful', true)
             ->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(device_info, "$.hash")) = ?', [$hash])
@@ -83,6 +84,7 @@ class DeviceFingerprintService
         } elseif (stripos($userAgent, 'iPhone') !== false || stripos($userAgent, 'iPad') !== false) {
             return 'iOS';
         }
+
         return null;
     }
 

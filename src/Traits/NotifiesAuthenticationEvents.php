@@ -6,7 +6,6 @@ namespace Harryes\SentinelLog\Traits;
 
 use Harryes\SentinelLog\Models\AuthenticationLog;
 use Harryes\SentinelLog\Notifications\FailedLoginAttempt;
-use Harryes\SentinelLog\Notifications\NewDeviceLogin;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Notification;
@@ -28,7 +27,7 @@ trait NotifiesAuthenticationEvents
      */
     public function notifyFailedAttempt(AuthenticationLog $log): void
     {
-        if (!config('sentinel-log.notifications.failed_attempt.enabled', false)) {
+        if (! config('sentinel-log.notifications.failed_attempt.enabled', false)) {
             return;
         }
 

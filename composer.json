@@ -30,6 +30,14 @@
       ]
     }
   },
+  "scripts": {
+    "lint": "pint",
+    "lint:test": "pint --test",
+    "format": "pint -v"
+  },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "require-dev": {
+    "laravel/pint": "^1.22"
+  }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog\Listeners;
 
+use Exception;
 use Harryes\SentinelLog\Models\AuthenticationLog;
 use Harryes\SentinelLog\Notifications\NewDeviceLogin;
 use Harryes\SentinelLog\Notifications\SessionHijackingDetected;
@@ -18,9 +19,13 @@ use Illuminate\Support\Facades\Notification;
 class LogSuccessfulLogin
 {
     protected DeviceFingerprintService $fingerprintService;
+
     protected GeolocationService $geoService;
+
     protected TwoFactorAuthenticationService $twoFactorService;
+
     protected SessionTrackingService $sessionService;
+
     protected BruteForceProtectionService $bruteForceService;
 
     public function __construct(
@@ -39,7 +44,7 @@ class LogSuccessfulLogin
 
     public function handle(Login $event): void
     {
-        if (!config('sentinel-log.enabled', true) || !config('sentinel-log.events.login', true)) {
+        if (! config('sentinel-log.enabled', true) || ! config('sentinel-log.events.login', true)) {
             return;
         }
 
@@ -49,7 +54,7 @@ class LogSuccessfulLogin
 
         try {
             $session = $this->sessionService->track($event->user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             abort(403, $e->getMessage()); // e.g., "Maximum active sessions exceeded"
         }
 
@@ -73,7 +78,7 @@ class LogSuccessfulLogin
         $this->bruteForceService->checkGeoFence();
         $this->bruteForceService->clearAttempts(request()->ip());
 
-        if ($event->user->two_factor_secret && !session()->has('2fa_verified')) {
+        if ($event->user->two_factor_secret && ! session()->has('2fa_verified')) {
             AuthenticationLog::create([
                 'authenticatable_id' => $event->user->getKey(),
                 'authenticatable_type' => get_class($event->user),

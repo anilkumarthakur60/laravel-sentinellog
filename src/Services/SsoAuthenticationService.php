@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Harryes\SentinelLog\Services;
 
 use Harryes\SentinelLog\Models\SsoToken;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class SsoAuthenticationService
@@ -33,6 +32,7 @@ class SsoAuthenticationService
         if ($ssoToken && $ssoToken->isValid()) {
             $user = $ssoToken->authenticatable;
             $ssoToken->delete(); // One-time use
+
             return $user; // Return user without logging in here
         }
 

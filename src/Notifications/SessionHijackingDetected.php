@@ -14,6 +14,7 @@ class SessionHijackingDetected extends Notification
     use Queueable;
 
     protected SentinelSession $session;
+
     protected string $reason;
 
     public function __construct(SentinelSession $session, string $reason)

@@ -14,6 +14,7 @@ class FailedLoginAttempt extends Notification
     use Queueable;
 
     protected AuthenticationLog $log;
+
     protected int $attemptCount;
 
     public function __construct(AuthenticationLog $log, int $attemptCount)
@@ -38,7 +39,7 @@ class FailedLoginAttempt extends Notification
             ->line("There have been {$this->attemptCount} failed login attempts on your account.")
             ->line("Last Attempt IP: {$this->log->ip_address}")
             ->line("Location: {$city}, {$country}")
-           ->line("Device: {$this->log->device_info['browser']}")
+            ->line("Device: {$this->log->device_info['browser']}")
             ->line("Time: {$this->log->event_at}")
             ->action('Secure Your Account', url('/'));
     }

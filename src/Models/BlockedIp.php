@@ -27,6 +27,6 @@ class BlockedIp extends Model
      */
     public function isActive(): bool
     {
-        return !$this->expires_at || $this->expires_at->isFuture();
+        return ! $this->expires_at || $this->expires_at->isFuture();
     }
 }

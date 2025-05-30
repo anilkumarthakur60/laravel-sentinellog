@@ -22,6 +22,7 @@ class EnforceGeoFencing
         if (config('sentinel-log.geo_fencing.enabled', false)) {
             $this->bruteForceService->checkGeoFence();
         }
+
         return $next($request);
     }
 }

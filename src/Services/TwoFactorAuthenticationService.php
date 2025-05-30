@@ -27,10 +27,11 @@ class TwoFactorAuthenticationService
 
         $binary = pack('N*', 0) . pack('N*', $timestamp);
         $hash = hash_hmac('sha1', $binary, $secret, true);
-        $offset = ord($hash[19]) & 0x0f;
+        $offset = ord($hash[19]) & 0x0F;
 
-        $code = (unpack('N', substr($hash, $offset, 4))[1] & 0x7fffffff) % 1000000;
-        return str_pad((string)$code, 6, '0', STR_PAD_LEFT);
+        $code = (unpack('N', substr($hash, $offset, 4))[1] & 0x7FFFFFFF) % 1000000;
+
+        return str_pad((string) $code, 6, '0', STR_PAD_LEFT);
     }
 
     /**
