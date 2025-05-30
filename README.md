@@ -1,3 +1,4 @@
+![Social Preview](https://github.com/Harish120/laravel-sentinellog/blob/main/.github/images/social-preview.png)
 # Laravel SentinelLog
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
