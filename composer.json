@@ -3,7 +3,7 @@
   "description": "A vigilant authentication logging and security package for Laravel 8-12.",
   "type": "laravel-package",
   "license": "MIT",
-  "version": "v1.0.0",
+  "version": "v0.0.1",
   "keywords": ["laravel", "sentinel", "log", "authentication", "security", "laravel-package"],
   "homepage": "https://github.com/harryes/laravel-sentinellog",
   "authors": [
@@ -26,6 +26,11 @@
       "Harryes\\SentinelLog\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
   "extra": {
     "laravel": {
       "providers": [
@@ -36,12 +41,20 @@
   "scripts": {
     "lint": "pint",
     "lint:test": "pint --test",
-    "format": "pint -v"
+    "format": "pint -v",
+    "test": "pest",
+    "test:coverage": "pest --coverage",
+    "test:types": "pest --type-coverage"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require-dev": {
-    "laravel/pint": "^1.22"
+    "laravel/pint": "^1.22",
+    "pestphp/pest": "^3.0",
+    "pestphp/pest-plugin-laravel": "^3.0",
+    "pestphp/pest-plugin-arch": "^3.0",
+    "pestphp/pest-plugin-type-coverage": "^3.0",
+    "orchestra/testbench": "^9.0|^10.0"
   },
   "config": {
     "allow-plugins": {
