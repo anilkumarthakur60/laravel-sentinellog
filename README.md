@@ -18,6 +18,33 @@
 - **Geo-Fencing**: Restricts logins to specific countries.
 - **Single Sign-On (SSO)**: Token-based SSO for seamless authentication.
 
+## Demo Project
+
+Want to see Laravel SentinelLog in action? Check out our demo project:
+
+### [Laravel SentinelLog Demo](https://github.com/Harish120/sentinel-test)
+
+This demo project showcases:
+- Complete authentication system with SentinelLog integration
+- Real-world implementation of all features
+- Best practices for configuration and usage
+- Example of custom notifications and event handling
+- Interactive UI for testing various security features
+
+To run the demo locally:
+```bash
+git clone https://github.com/YOUR_USERNAME/laravel-sentinellog-demo.git
+cd laravel-sentinellog-demo
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+php artisan serve
+```
+
+Visit `http://localhost:8000` to explore the demo.
+
 ## Installation
 
 ### Prerequisites
