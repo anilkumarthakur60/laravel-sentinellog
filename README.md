@@ -33,7 +33,7 @@ This demo project showcases:
 
 To run the demo locally:
 ```bash
-git clone https://github.com/YOUR_USERNAME/laravel-sentinellog-demo.git
+git clone https://github.com/Harish120/sentinel-test.git
 cd laravel-sentinellog-demo
 composer install
 cp .env.example .env
