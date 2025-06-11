@@ -3,7 +3,7 @@
   "description": "A vigilant authentication logging and security package for Laravel 8-12.",
   "type": "laravel-package",
   "license": "MIT",
-  "version": "v0.0.1",
+  "version": "v0.0.2",
   "keywords": ["laravel", "sentinel", "log", "authentication", "security", "laravel-package"],
   "homepage": "https://github.com/harryes/laravel-sentinellog",
   "authors": [
