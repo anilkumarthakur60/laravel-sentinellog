@@ -24,9 +24,9 @@ class SentinelLogServiceProviderTest extends TestCase
     public function it_loads_migrations(): void
     {
         $migrations = $this->app->make('migrator')
-            ->getMigrationFiles(database_path('migrations'));
+            ->getMigrationFiles(__DIR__ . '/../../database/migrations');
 
         expect($migrations)->toBeArray()
-            ->and($migrations)->toHaveCount(1);
+            ->and($migrations)->toHaveCount(5); // We have 5 migration files in the package
     }
 }
