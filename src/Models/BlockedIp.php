@@ -6,6 +6,12 @@ namespace Harryes\SentinelLog\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string              $ip_address
+ * @property \Carbon\Carbon|null $blocked_at
+ * @property \Carbon\Carbon|null $expires_at
+ * @property string|null         $reason
+ */
 class BlockedIp extends Model
 {
     protected $table = 'sentinel_blocked_ips';

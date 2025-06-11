@@ -1,0 +1,27 @@
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    tmpDir: build/phpstan
+
+    ignoreErrors:
+        # ✅ Pest: dynamic property access
+        - message: '~Access to an undefined property Pest\\Expectation::\$value~'
+          path: tests/Pest.php
+
+        # ✅ Pest: closure return type
+        - message: '~Parameter #1 \$callback of method Pest\\Expectation::extend\(\) expects callable\(.*\), Closure\(.*\) given~'
+          path: tests/Pest.php
+
+        # ✅ Laravel Model toArray covariance
+        - message: '~Return type \(array\) of method .+::toArray\(\) should be covariant with return type \(array<string, mixed>\) of method Illuminate\\\\Contracts\\\\Support\\\\Arrayable<string,mixed>::toArray\(\)~'
+          path: src/Models/AuthenticationLog.php
+
+    excludePaths:
+        - build
+
+    reportUnmatchedIgnoredErrors: false
+
+includes:
+    - ./vendor/larastan/larastan/extension.neon

@@ -44,7 +44,12 @@
     "format": "pint -v",
     "test": "pest",
     "test:coverage": "pest --coverage",
-    "test:types": "pest --type-coverage"
+    "test:types": "pest --type-coverage",
+    "analyse": "php -d memory_limit=-1 ./vendor/bin/phpstan analyse",
+    "check": [
+      "@test",
+      "@analyse"
+    ]
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -54,7 +59,9 @@
     "pestphp/pest-plugin-laravel": "^3.0",
     "pestphp/pest-plugin-arch": "^3.0",
     "pestphp/pest-plugin-type-coverage": "^3.0",
-    "orchestra/testbench": "^9.0|^10.0"
+    "orchestra/testbench": "^9.0|^10.0",
+    "phpstan/phpstan": "^1.10",
+    "larastan/larastan": "^2.0"
   },
   "config": {
     "allow-plugins": {

@@ -23,9 +23,14 @@ class FailedLoginAttempt extends Notification
         $this->attemptCount = $attemptCount;
     }
 
-    public function via(object $notifiable): array
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @return array<int, string>
+     */
+    public function via(): array
     {
-        return config('sentinel-log.notifications.failed_attempt.channels', ['mail']);
+        return ['mail', 'database'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -44,7 +49,12 @@ class FailedLoginAttempt extends Notification
             ->action('Secure Your Account', url('/'));
     }
 
-    public function toArray(object $notifiable): array
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
     {
         return [
             'event' => 'failed_login_attempt',

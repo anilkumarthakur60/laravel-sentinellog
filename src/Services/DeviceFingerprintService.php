@@ -20,6 +20,8 @@ class DeviceFingerprintService
 
     /**
      * Generate a simple fingerprint based on request headers.
+     *
+     * @return array<string, mixed>
      */
     public function generate(): array
     {

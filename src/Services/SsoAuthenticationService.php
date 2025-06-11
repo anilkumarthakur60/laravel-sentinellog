@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Harryes\SentinelLog\Services;
 
 use Harryes\SentinelLog\Models\SsoToken;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 
 class SsoAuthenticationService
 {
-    public function generateToken($authenticatable, string $clientId): string
+    public function generateToken(Authenticatable $authenticatable, string $clientId): string
     {
         $token = Str::random(64);
         SsoToken::create([

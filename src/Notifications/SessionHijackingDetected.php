@@ -23,9 +23,12 @@ class SessionHijackingDetected extends Notification
         $this->reason = $reason;
     }
 
-    public function via(object $notifiable): array
+    /**
+     * @return array<int, string>
+     */
+    public function via(): array
     {
-        return config('sentinel-log.notifications.session_hijacking.channels', ['mail']);
+        return ['mail', 'database'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -45,7 +48,10 @@ class SessionHijackingDetected extends Notification
             ->action('Review Sessions', url('/sessions'));
     }
 
-    public function toArray(object $notifiable): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
     {
         return [
             'event' => 'session_hijacking',

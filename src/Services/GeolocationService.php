@@ -20,8 +20,10 @@ class GeolocationService
 
     /**
      * Get geolocation data for an IP address.
+     *
+     * @return array<string, mixed>
      */
-    public function getLocation(string $ip): ?array
+    public function getLocation(string $ip): array
     {
         if (in_array($ip, ['127.0.0.1', '::1'])) {
             // Use a configurable test IP or fallback
@@ -55,8 +57,8 @@ class GeolocationService
                     'ip' => $data['query'] ?? $ip,
                 ];
             }
-        } catch (Exception $e) {
-            return null;
+        } catch (Exception) {
+            // Fall through to default return
         }
 
         return [

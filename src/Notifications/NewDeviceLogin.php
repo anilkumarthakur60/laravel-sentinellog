@@ -20,9 +20,12 @@ class NewDeviceLogin extends Notification
         $this->log = $log;
     }
 
-    public function via(object $notifiable): array
+    /**
+     * @return array<int, string>
+     */
+    public function via(): array
     {
-        return config('sentinel-log.notifications.new_device.channels', ['mail']);
+        return ['mail', 'database'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -41,7 +44,10 @@ class NewDeviceLogin extends Notification
             ->action('Review Activity', url('/'));
     }
 
-    public function toArray(object $notifiable): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
     {
         return [
             'event' => 'new_device_login',

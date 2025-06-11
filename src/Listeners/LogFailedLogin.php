@@ -9,6 +9,7 @@ use Harryes\SentinelLog\Services\BruteForceProtectionService;
 use Harryes\SentinelLog\Services\DeviceFingerprintService;
 use Harryes\SentinelLog\Services\GeolocationService;
 use Illuminate\Auth\Events\Failed;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class LogFailedLogin
 {
@@ -48,8 +49,21 @@ class LogFailedLogin
             'is_successful' => false,
         ]);
 
-        if ($event->user) {
-            $event->user->notifyFailedAttempt($log);
+        if ($event->user instanceof NotifiableWithFailedAttempt) {
+            $event->user->notifyFailedAttempt($log->toArray());
         }
     }
+}
+
+/**
+ * Interface for users that can be notified of failed login attempts.
+ */
+interface NotifiableWithFailedAttempt extends Authenticatable
+{
+    /**
+     * Notify the user of a failed login attempt.
+     *
+     * @param array<string, mixed> $data The authentication log data
+     */
+    public function notifyFailedAttempt(array $data): void;
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Harryes\SentinelLog\Listeners;
 
 use Exception;
+use Harryes\SentinelLog\Contracts\TwoFactorAuthenticatable;
 use Harryes\SentinelLog\Models\AuthenticationLog;
 use Harryes\SentinelLog\Notifications\NewDeviceLogin;
 use Harryes\SentinelLog\Notifications\SessionHijackingDetected;
@@ -78,18 +79,23 @@ class LogSuccessfulLogin
         $this->bruteForceService->checkGeoFence();
         $this->bruteForceService->clearAttempts(request()->ip());
 
-        if ($event->user->two_factor_secret && ! session()->has('2fa_verified')) {
-            AuthenticationLog::create([
-                'authenticatable_id' => $event->user->getKey(),
-                'authenticatable_type' => get_class($event->user),
-                'session_id' => $session->session_id,
-                'event_name' => '2fa_required',
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'device_info' => $this->fingerprintService->generate(),
-                'location' => $this->geoService->getLocation(request()->ip()),
-                'is_successful' => false,
-            ]);
+        $user = $event->user;
+
+        if ($user instanceof TwoFactorAuthenticatable) {
+            $twoFactorEnabled = (bool) $user->getTwoFactorSecret();
+            if ($twoFactorEnabled && ! session()->has('2fa_verified')) {
+                AuthenticationLog::create([
+                    'authenticatable_id' => $event->user->getKey(),
+                    'authenticatable_type' => get_class($event->user),
+                    'session_id' => $session->session_id,
+                    'event_name' => '2fa_required',
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'device_info' => $this->fingerprintService->generate(),
+                    'location' => $this->geoService->getLocation(request()->ip()),
+                    'is_successful' => false,
+                ]);
+            }
         }
 
         if ($isNewDevice) {

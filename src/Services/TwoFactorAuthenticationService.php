@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Harryes\SentinelLog\Services;
 
+use Harryes\SentinelLog\Contracts\TwoFactorAuthenticatable;
 use Illuminate\Support\Str;
 use ParagonIE\ConstantTime\Base32;
 
@@ -66,5 +67,22 @@ class TwoFactorAuthenticationService
         ]);
 
         return "otpauth://totp/{$label}?{$params}";
+    }
+
+    /**
+     * Check if two-factor authentication is properly set up.
+     */
+    public function isSetup(TwoFactorAuthenticatable $user): bool
+    {
+        return $user->getTwoFactorEnabledAt() !== null &&
+               $user->getTwoFactorSecret() !== null;
+    }
+
+    /**
+     * Check if two-factor authentication is required.
+     */
+    public function isRequired(TwoFactorAuthenticatable $user): bool
+    {
+        return config('sentinel-log.two_factor.required', false);
     }
 }

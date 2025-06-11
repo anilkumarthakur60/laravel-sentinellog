@@ -1,32 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
-use Harryes\SentinelLog\SentinelLogServiceProvider;
 use Tests\TestCase;
 
-uses(TestCase::class)->in(__DIR__);
+class SentinelLogServiceProviderTest extends TestCase
+{
+    /** @test */
+    public function it_properly_merges_config(): void
+    {
+        $config = config('sentinel-log');
 
-beforeEach(function () {
-    $this->app->register(SentinelLogServiceProvider::class);
-});
+        expect($config)->toBeArray()
+            ->and($config)->toHaveKey('enabled')
+            ->and($config)->toHaveKey('events')
+            ->and($config)->toHaveKey('table_name')
+            ->and($config['table_name'])->toBe('authentication_logs');
+    }
 
-test('config is properly merged', function () {
-    $config = config('sentinel-log');
+    /** @test */
+    public function it_loads_migrations(): void
+    {
+        $migrations = $this->app->make('migrator')
+            ->getMigrationFiles(database_path('migrations'));
 
-    expect($config)->toBeArray()
-        ->and($config)->toHaveKey('enabled')
-        ->and($config)->toHaveKey('events')
-        ->and($config)->toHaveKey('table_name')
-        ->and($config['table_name'])->toBe('authentication_logs');
-});
-
-test('migrations are loaded', function () {
-    $migrationPath = __DIR__ . '/../../database/migrations';
-
-    expect(file_exists($migrationPath))->toBeTrue()
-        ->and(collect(glob($migrationPath . '/*.php'))
-            ->filter(fn ($file) => str_contains($file, 'create_authentication_logs_table.php'))
-            ->isNotEmpty()
-        )->toBeTrue();
-});
+        expect($migrations)->toBeArray()
+            ->and($migrations)->toHaveCount(1);
+    }
+}

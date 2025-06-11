@@ -6,6 +6,7 @@ namespace Harryes\SentinelLog\Services;
 
 use Exception;
 use Harryes\SentinelLog\Models\SentinelSession;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +28,7 @@ class SessionTrackingService
     /**
      * Track or update a session, enforcing max session limit.
      */
-    public function track($authenticatable): SentinelSession
+    public function track(Authenticatable $authenticatable): SentinelSession
     {
         if (! config('sentinel-log.sessions.enabled', true)) {
             throw new Exception('Session tracking is disabled');
@@ -70,6 +71,8 @@ class SessionTrackingService
 
     /**
      * Check for potential session hijacking.
+     *
+     * @return array<string, mixed>|null
      */
     public function detectHijacking(SentinelSession $currentSession): ?array
     {
